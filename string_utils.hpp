@@ -1,0 +1,22 @@
+#ifndef STRING_UTILS_H
+#define STRING_UTILS_H
+#include "types.hpp"
+
+
+namespace vk {
+
+inline string replaceAll(string str, const string from, const string to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length();
+    }
+    return str;
+}
+
+#define escape_spaces(str) replaceAll((str), " ", "%20")
+#define escape_percent(str) replaceAll((str), "%", "\%")
+
+}
+
+#endif // STRING_UTILS_H
