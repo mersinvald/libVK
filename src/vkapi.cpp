@@ -25,16 +25,16 @@ VKAPI::VKAPI() : VKAPI_INITIALIZER_LIST {
 
     curl_handle = curl_easy_init();
     if(!curl_handle) {
-        Log::error("%s: couldn't initialize API, curl initialization failed", __FUNCTION__);
+        ERROR() << "couldn't initialize API, curl initialization failed";
         exit(1);
     }
 
-    Log::log(4, "%s: initialized new curl handle", __FUNCTION__);
+    LOG3() << "initialized new curl handle";
 
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, VKAPI::CurlWriteDataCallback);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &this->json);
 
-    Log::log(4, "%s: curl writefunction is JSON writer now", __FUNCTION__);
+    LOG3() << "curl writefunction is JSON writer now";
 }
 
 VKAPI::VKAPI(const string app_id, const string app_secret) : VKAPI() {
@@ -58,7 +58,7 @@ VKAPI::Authorize(const string login, const string passwd, string* access_token) 
     }
 
     if(!json.isMember("access_token")) {
-        Log::error("%s: no \"access token\" field in VK API answer.", __FUNCTION__);
+        ERROR() << "no \"access token\" field in VK API answer.";
         return RESULT_ERROR;
     }
 
@@ -67,7 +67,7 @@ VKAPI::Authorize(const string login, const string passwd, string* access_token) 
         *access_token    = def_access_token;
     }
 
-    Log::log(2, "%s: SUCCESS, access_token: %s", __FUNCTION__,  def_access_token.c_str());
+    LOG2() << "SUCCESS, access_token:" << def_access_token;
     return RESULT_SUCCESS;
 }
 
@@ -76,7 +76,7 @@ VKAPI::Request(const string method, Args& arguments) {
     /// Append default access_token
     if(arguments.find("access_token") == arguments.end()) {
         if(def_access_token == "") {
-            Log::warning("%s: access token wasn't passed, only few methods will work correctly", __FUNCTION__);
+            WARNING() << "access token wasn't passed, only few methods will work correctly";
         } else {
             arguments["access_token"] = def_access_token;
         }
@@ -85,7 +85,7 @@ VKAPI::Request(const string method, Args& arguments) {
     /// Append default api version
     if(arguments.find("v") == arguments.end()) {
         if(def_api_version == "") {
-            Log::warning("%s: api version wasn't' passed, VK will presume it's default, probably can lead to UB", __FUNCTION__);
+            WARNING() << "api version wasn't' passed, VK will presume it's default, probably can lead to UB";
         } else {
             arguments["v"] = def_api_version;
         }
@@ -101,7 +101,7 @@ VKAPI::Request(const string method, Args& arguments) {
 VKResultCode_t
 VKAPI::CustomRequest(const string url, const string method, const Args& arguments) {
     const string request_url = GenerateURL(url, method, arguments);
-    Log::log(5, "%s request url: %s", __FUNCTION__, escape_percent(request_url).c_str());
+    LOG3() << "request url: " << escape_percent(request_url);
 
     curl_easy_setopt(curl_handle, CURLOPT_URL, request_url.c_str());
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, VKAPI::CurlWriteDataCallback);
@@ -109,7 +109,7 @@ VKAPI::CustomRequest(const string url, const string method, const Args& argument
 
     curl_errno = curl_easy_perform(curl_handle);
     if(curl_errno != CURLE_OK) {
-        Log::error("%s: curl returned \"%s\"", __FUNCTION__, curl_easy_strerror(curl_errno));
+        ERROR() << "curl error: " << curl_easy_strerror(curl_errno);
         return RESULT_ERROR;
     }
 
@@ -128,14 +128,12 @@ VKAPI::HandleError(const VKValue json) {
 
     std::stringstream ss;
     for(ArrayIndex i = 0; i < request_params.size()-1; i++) {
-        ss << "\t\t\t"
-           << request_params[i]["key"] << "  :  "
+        ss << request_params[i]["key"] << "  :  "
            << request_params[i]["value"]
            << std::endl;
     }
 
-    Log::error("%s: VKAPI returned error %i:\n\t\t\tError Message: %s\n%s",
-               __FUNCTION__, vk_errno, err_msg.c_str(), ss.str().c_str());
+    ERROR() << "VKAPI returned error " << vk_errno << "\nError Message: " << err_msg << "\n" << ss.str();
 
     return vk_errno;
 }
@@ -161,7 +159,7 @@ VKAPI::ReadDataToJSON() {
     Reader reader;
 
     if(!reader.parse(buffer, json, false)) {
-        Log::error("%s: json parsing error %s", __FUNCTION__, reader.getFormattedErrorMessages().c_str());
+        ERROR() << "json parsing error: " << reader.getFormattedErrorMessages();
         buffer.clear();
         return RESULT_ERROR;
     }
