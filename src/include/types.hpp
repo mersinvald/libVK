@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 #include <assert.h>
-#include "jsoncpp/json/json.h"
+#include "json/json.h"
 
 namespace vk {
 
