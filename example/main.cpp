@@ -20,14 +20,10 @@ using namespace vk;
 int main(int argc, char** argv) {
     srand(clock());
 
-    log::print_timer = true;
-    log::print_func  = true;
-    log::print_level = true;
-    log::log_level   = log::trace;
-
-    ofstream log_file("./log.txt");
-    log::log_ostream = cerr;
-    log::log_ostream = log_file;
+    mlog::print_timer = true;
+    mlog::print_func  = true;
+    mlog::print_level = true;
+    mlog::log_level   = mlog::trace;
 
     INFO() << "Starting Liker :)";
 

@@ -28,7 +28,7 @@
 #include <string>
 #include <sstream>
 
-namespace log {
+namespace mlog {
 
 using std::string;
 using std::ostream;
@@ -59,28 +59,28 @@ const string lvl_strings[] = {
 };
 
 /// Printers
-#define PRINT_LEVEL(level)          ((log::print_level)                     ? log::Logger::resizeString(log::lvl_strings[level] + " ", 8,  ' ')             : "")
-#define PRINT_FUNC()                ((log::print_func)                      ? log::Logger::resizeString(string(__FUNCTION__)    + ": ",16, ' ')             : "")
-#define PRINT_SOURCE()              ((log::print_source)                    ? log::Logger::trimPath(string(__FILE__ ":") + std::to_string(__LINE__)) + " "  : "")
-#define PRINT_TIMER()               ((log::print_timer)                     ? string("[") + log::Logger::getTimer()                                  + "] " : "")
-#define PRINT_DATE()                ((log::print_date && !log::print_timer) ? log::Logger::getTimeFmt("%D")                                          + "/"  : "")
-#define PRINT_TIME()                ((log::print_time && !log::print_timer) ? log::Logger::getTimeFmt("%T")                                          + " " : "")
+#define PRINT_LEVEL(level)          ((mlog::print_level)                     ? mlog::Logger::resizeString(mlog::lvl_strings[level] + " ", 8,  ' ')             : "")
+#define PRINT_FUNC()                ((mlog::print_func)                      ? mlog::Logger::resizeString(string(__FUNCTION__)    + ": ",16, ' ')             : "")
+#define PRINT_SOURCE()              ((mlog::print_source)                    ? mlog::Logger::trimPath(string(__FILE__ ":") + std::to_string(__LINE__)) + " "  : "")
+#define PRINT_TIMER()               ((mlog::print_timer)                     ? string("[") + mlog::Logger::getTimer()                                  + "] " : "")
+#define PRINT_DATE()                ((mlog::print_date && !mlog::print_timer) ? mlog::Logger::getTimeFmt("%D")                                          + "/"  : "")
+#define PRINT_TIME()                ((mlog::print_time && !mlog::print_timer) ? mlog::Logger::getTimeFmt("%T")                                          + " " : "")
 
 /// Logger macros
-#define LOG_OSTREAM(level)          ((level == log::error || level == log::warning) ? log::err_ostream : log::log_ostream)
-#define Log(level)                  log::Logger(LOG_OSTREAM(level), level) \
+#define LOG_OSTREAM(level)          ((level == mlog::error || level == mlog::warning) ? mlog::err_ostream : mlog::log_ostream)
+#define Log(level)                  mlog::Logger(LOG_OSTREAM(level), level) \
                                              << PRINT_TIMER()      << PRINT_DATE()     << PRINT_TIME() \
                                              << PRINT_LEVEL(level) << PRINT_SOURCE() << PRINT_FUNC()
 
-#define ERROR()                     Log(log::error)
-#define WARNING()                   Log(log::warning)
-#define INFO()                      Log(log::info)
-#define LOG()                       Log(log::log)
-#define LOG0()                      Log(log::log)
-#define LOG1()                      Log(log::log1)
-#define LOG2()                      Log(log::log2)
-#define LOG3()                      Log(log::log3)
-#define TRACE()                     Log(log::trace)
+#define ERROR()                     Log(mlog::error)
+#define WARNING()                   Log(mlog::warning)
+#define INFO()                      Log(mlog::info)
+#define LOG()                       Log(mlog::log)
+#define LOG0()                      Log(mlog::log)
+#define LOG1()                      Log(mlog::log1)
+#define LOG2()                      Log(mlog::log2)
+#define LOG3()                      Log(mlog::log3)
+#define TRACE()                     Log(mlog::trace)
 
 /// Rebindable reference
 typedef std::reference_wrapper<ostream> osref;
