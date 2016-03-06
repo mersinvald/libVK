@@ -25,8 +25,7 @@ VKAPI::VKAPI() : VKAPI_INITIALIZER_LIST {
 
     curl_handle = curl_easy_init();
     if(!curl_handle) {
-        ERROR() << "couldn't initialize API, curl initialization failed";
-        exit(1);
+        throw CurlException("curl_easy_init() failed");
     }
 
     LOG3() << "initialized new curl handle";
@@ -42,7 +41,7 @@ VKAPI::VKAPI(const string app_id, const string app_secret) : VKAPI() {
     this->app_secret = app_secret;
 }
 
-VKResultCode_t
+API_RETURN_VALUE
 VKAPI::Authorize(const string login, const string passwd, string* access_token) {
     Args args;
     args["grant_type"]    = "password";
@@ -53,13 +52,10 @@ VKAPI::Authorize(const string login, const string passwd, string* access_token) 
 
     CustomRequest(VKAPI_AUTH_URL, "token", args);
 
-    if(HandleError(json) != RESULT_SUCCESS) {
-       return vk_errno;
-    }
+    HandleError(json);
 
     if(!json.isMember("access_token")) {
-        ERROR() << "no \"access token\" field in VK API answer.";
-        return RESULT_ERROR;
+        throw VKException("Authorization failed: VK returned no access token");
     }
 
     def_access_token = json["access_token"].asString();
@@ -68,10 +64,9 @@ VKAPI::Authorize(const string login, const string passwd, string* access_token) 
     }
 
     LOG2() << "SUCCESS, access_token:" << def_access_token;
-    return RESULT_SUCCESS;
 }
 
-VKResultCode_t
+API_RETURN_VALUE
 VKAPI::Request(const string method, Args& arguments) {
     /// Append default access_token
     if(arguments.find("access_token") == arguments.end()) {
@@ -91,14 +86,11 @@ VKAPI::Request(const string method, Args& arguments) {
         }
     }
 
-    if(CustomRequest(VKAPI_URL, method, arguments) != RESULT_SUCCESS) {
-        return RESULT_ERROR;
-    }
-
-    return HandleError(json);
+    CustomRequest(VKAPI_URL, method, arguments);
+    HandleError(json);
 }
 
-VKResultCode_t
+API_RETURN_VALUE
 VKAPI::CustomRequest(const string url, const string method, const Args& arguments) {
     const string request_url = GenerateURL(url, method, arguments);
     LOG3() << "request url: " << escape_percent(request_url);
@@ -109,33 +101,20 @@ VKAPI::CustomRequest(const string url, const string method, const Args& argument
 
     curl_errno = curl_easy_perform(curl_handle);
     if(curl_errno != CURLE_OK) {
-        ERROR() << "curl error: " << curl_easy_strerror(curl_errno);
-        return RESULT_ERROR;
+        throw CurlException(curl_errno, curl_easy_strerror(curl_errno));
     }
 
     ReadDataToJSON();
-
-    return RESULT_SUCCESS;
 }
 
-VKResultCode_t
+API_RETURN_VALUE
 VKAPI::HandleError(const VKValue json) {
-    if(!json.isMember("error")) return RESULT_SUCCESS;
+    if(!json.isMember("error")) return;
+
     Value error          = json["error"];
     vk_errno             = (VKResultCode_t) error["error_code"].asInt();
-    string err_msg       = error["error_msg"].asString();
-    Value request_params = error["request_params"];
 
-    std::stringstream ss;
-    for(ArrayIndex i = 0; i < request_params.size()-1; i++) {
-        ss << request_params[i]["key"] << "  :  "
-           << request_params[i]["value"]
-           << std::endl;
-    }
-
-    ERROR() << "VKAPI returned error " << vk_errno << "\nError Message: " << err_msg << "\n" << ss.str();
-
-    return vk_errno;
+    throw VKException(json);
 }
 
 const string
@@ -153,18 +132,17 @@ VKAPI::CurlWriteDataCallback(void* contents, size_t size, size_t nmemb, void* us
     return size*nmemb;
 }
 
-VKResultCode_t
+void
 VKAPI::ReadDataToJSON() {
     json.clear();
     Reader reader;
 
     if(!reader.parse(buffer, json, false)) {
-        ERROR() << "json parsing error: " << reader.getFormattedErrorMessages();
         buffer.clear();
-        return RESULT_ERROR;
+        throw JsonException(reader.getFormattedErrorMessages());
     }
+
     buffer.clear();
-    return RESULT_SUCCESS;
 }
 
 /* ##### SETTERS ##### */

@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <string>
 #include <map>
+#include <exception>
 #include <curl/curl.h>
 
 #include "types.hpp"
@@ -47,6 +48,35 @@ enum VKResultCode_t {
     RESULT_ADVERTISMENT_OPERATION_ERROR     = 603,
 };
 
+/// Error handling
+extern void printStackTrace(uint16_t max_frames, bool forced = false);
+class libVKException : public std::exception {
+public:
+    using std::exception::exception;
+    virtual ~libVKException() noexcept {}
+    libVKException();
+    libVKException(int err_code, const string& error_msg);
+    libVKException(const char*   error_msg);
+    libVKException(const string& error_msg);
+
+    friend std::ostream& operator<< (std::ostream& os, const libVKException& e);
+    const char* what() const noexcept;
+
+protected:
+    string  err_str;
+    int     err_code;
+};
+
+struct VKException : public libVKException {
+public:
+    using libVKException::libVKException;
+    explicit VKException(const VKValue& json);
+};
+
+/// Concrete exceptions for non-vk api errors
+struct CurlException : public libVKException { using libVKException::libVKException; };
+struct JsonException : public libVKException { using libVKException::libVKException; };
+
 #define VKAPI_URL       "https://api.vk.com/method/"
 #define VKAPI_AUTH_URL  "https://oauth.vk.com/"
 
@@ -57,7 +87,7 @@ enum VKResultCode_t {
 #define API_METHOD_ARGS                       Args& args
 #define API_SUBCLASS_METHOD_REQUEST(method) { return this_ptr->Request((method), args); }
 #define API_METHOD_REQUEST(method)          { return           Request((method), args); }
-#define API_RETURN_VALUE                      VKResultCode_t
+#define API_RETURN_VALUE                      void
 
 class VKAPI {
 public:
@@ -84,7 +114,8 @@ public:
     string         getAccessToken() const;
 
     /* API methods */
-    inline API_RETURN_VALUE execute (API_METHOD_ARGS)                       API_METHOD_REQUEST("execute")
+    inline API_RETURN_VALUE queue      (API_METHOD_ARGS);
+    inline API_RETURN_VALUE execute_vk (API_METHOD_ARGS)                    API_METHOD_REQUEST("execute")
 
     class users_api {
         API_SUBCLASS_INIT(users_api)
@@ -584,7 +615,7 @@ private:
     VKValue        json;
     CURL*          curl_handle;
     CURLcode       curl_errno;
-    API_RETURN_VALUE vk_errno;
+    VKResultCode_t vk_errno;
 
     string   def_access_token;
     string   def_api_version;

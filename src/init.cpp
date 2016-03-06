@@ -1,6 +1,6 @@
 #include "log.hpp"
 
-namespace log {
+namespace mlog {
 
 lvl      log_level    = info;       ///< Default log level, every message above it will not be displayed
 osref    log_ostream  = std::cout;  ///< Default ostream for any loglevel but ERROR and WARNING

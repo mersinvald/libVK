@@ -11,7 +11,6 @@ class VKValue : public Value {
 public:
     using Value::Value;
 
-
 };
 
 }

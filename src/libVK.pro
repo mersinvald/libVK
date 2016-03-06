@@ -11,7 +11,12 @@ QMAKE_CXXFLAGS += -O0
 #QMAKE_CXXFLAGS += -fsanitize=memory -fsanitize-memory-track-origins -fPIE -fno-omit-frame-pointer -g -O2
 #QMAKE_LFLAGS += -fsanitize=memory -fsanitize-memory-track-origins -pie -fno-omit-frame-pointer -g
 
+
+DEFINES += BACKWARD_HAS_BFD=1
+DEFINES += BACKWARD_HAS_DW=1
+
 LIBS += -lcurl -lssl -lcrypto -lssl -lcrypto -llber -lldap -lz
+LIBS += -lbfd -ldw
 
 INCLUDEPATH += ./include/
 DEPENDPATH  += ./include/
@@ -22,7 +27,9 @@ SOURCES += \
     vkapi.cpp \
     vkjson.cpp \
     to_string.cpp \
-    init.cpp
+    init.cpp \
+    vkexception.cpp \
+    third-party/backward.cpp
 
 HEADERS += \
     include/vkapi.hpp \
@@ -30,4 +37,5 @@ HEADERS += \
     include/types.hpp \
     include/string_utils.hpp \
     include/log.hpp
+
 
