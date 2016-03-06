@@ -5,6 +5,7 @@ CONFIG -= qt
 
 SOURCES += main.cpp
 LIBS += -lcurl -lssl -lcrypto -lssl -lcrypto -llber -lldap -lz
+LIBS += -ldl -lbfd -ldw
 
 #QMAKE_CXX = ccache $${QMAKE_CXX}
 QMAKE_CXXFLAGS += -O0
