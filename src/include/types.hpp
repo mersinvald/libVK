@@ -1,5 +1,5 @@
-#ifndef TYPES_HPP
-#define TYPES_HPP
+#ifndef VKAPI_TYPES_HPP
+#define VKAPI_TYPES_HPP
 #include <string>
 #include <vector>
 #include <map>
@@ -22,7 +22,6 @@ using StrArray = VKArray<string>;
 using Args     = map<string, string>;
 
 class VKAPI;
-class VKJson;
 
 template<typename T>
 string to_string(const VKArray<T>& value);
@@ -34,4 +33,4 @@ inline string to_string(string str) { return str; }
 
 }
 
-#endif // TYPES_HPP
+#endif // VKAPI_TYPES_HPP
