@@ -1,3 +1,6 @@
+# Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+# See LICENSE
+
 TEMPLATE = lib
 CONFIG += static
 CONFIG += c++11

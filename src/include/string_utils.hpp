@@ -1,3 +1,6 @@
+/* Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+ * See LICENSE */
+
 #ifndef VKAPI_STRING_UTILS_H
 #define VKAPI_STRING_UTILS_H
 #include "types.hpp"

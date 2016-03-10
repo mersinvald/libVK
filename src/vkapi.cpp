@@ -1,3 +1,6 @@
+/* Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+ * See LICENSE */
+
 #include "vkapi.hpp"
 #include "log.hpp"
 #include "string_utils.hpp"

@@ -1,3 +1,6 @@
+# Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+# See LICENSE
+
 TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle

@@ -1,3 +1,6 @@
+/* Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+ * See LICENSE */
+
 #include <iostream>
 #include <string.h>
 #include <stdio.h>

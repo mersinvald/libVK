@@ -1,3 +1,6 @@
+/* Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+ * See LICENSE */
+
 #ifndef VKAPI_VKVALUE_H
 #define VKAPI_VKVALUE_H
 #include "types.hpp"

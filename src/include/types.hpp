@@ -1,3 +1,6 @@
+/* Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+ * See LICENSE */
+
 #ifndef VKAPI_TYPES_HPP
 #define VKAPI_TYPES_HPP
 #include <string>

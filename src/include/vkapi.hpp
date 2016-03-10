@@ -1,3 +1,6 @@
+/* Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+ * See LICENSE */
+
 #ifndef VKAPI_VKAPI_H
 #define VKAPI_VKAPI_H
 
