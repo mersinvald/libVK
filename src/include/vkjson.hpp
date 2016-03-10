@@ -1,5 +1,5 @@
-#ifndef VKVALUE_H
-#define VKVALUE_H
+#ifndef VKAPI_VKVALUE_H
+#define VKAPI_VKVALUE_H
 #include "types.hpp"
 #include <vector>
 
@@ -14,4 +14,4 @@ public:
 };
 
 }
-#endif // VKVALUE_H
+#endif // VKAPI_VKVALUE_H

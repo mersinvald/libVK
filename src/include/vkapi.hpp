@@ -1,5 +1,5 @@
-#ifndef VKAPI_H
-#define VKAPI_H
+#ifndef VKAPI_VKAPI_H
+#define VKAPI_VKAPI_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -625,4 +625,4 @@ private:
 
 }
 
-#endif // VKAPI_H
+#endif // VKAPI_VKAPI_H

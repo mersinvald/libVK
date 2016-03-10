@@ -1,5 +1,5 @@
-#ifndef STRING_UTILS_H
-#define STRING_UTILS_H
+#ifndef VKAPI_STRING_UTILS_H
+#define VKAPI_STRING_UTILS_H
 #include "types.hpp"
 
 
@@ -19,4 +19,4 @@ inline string replaceAll(string str, const string from, const string to) {
 
 }
 
-#endif // STRING_UTILS_H
+#endif // VKAPI_STRING_UTILS_H
