@@ -55,10 +55,16 @@ VKAPI::Authorize(const string login, const string passwd, string* access_token) 
 
     CustomRequest(VKAPI_AUTH_URL, "token", args);
 
-    HandleError(json);
+    if(!json.isMember("access_token") || json.isMember("error")) {
+        string error_msg;
 
-    if(!json.isMember("access_token")) {
-        throw VKException("Authorization failed: VK returned no access token");
+        try {
+            error_msg = this->json["error_description"].asString();
+        } catch(std::exception&) {
+            error_msg = "Authorization failed: VK returned no access token";
+        }
+
+        throw VKException(RESULT_AUTORIZATION_ERROR, error_msg);
     }
 
     def_access_token = json["access_token"].asString();
@@ -111,11 +117,15 @@ VKAPI::CustomRequest(const string url, const string method, const Args& argument
 }
 
 API_RETURN_VALUE
-VKAPI::HandleError(const VKValue json) {
+VKAPI::HandleError(const VKValue& json) {
     if(!json.isMember("error")) return;
+    Value error = json["error"];
 
-    Value error          = json["error"];
-    vk_errno             = (VKResultCode_t) error["error_code"].asInt();
+    try {    
+        vk_errno    = (VKResultCode_t) error["error_code"].asInt();
+    } catch (JsonException&) {
+        vk_errno    = RESULT_ERROR;
+    };
 
     throw VKException(json);
 }

@@ -70,17 +70,30 @@ operator<< (std::ostream& os, const VKException& e) {
 }
 
 VKException::VKException(const VKValue& json) {
-    if(!json.isMember("error")) return;
-    Value error          = json["error"];
-    Value request_params = error["request_params"];
-    err_code             = static_cast<VKResultCode_t>(error["error_code"].asInt());
+    /// Default values
+    this->err_code = RESULT_SUCCESS;
+    this->err_str  = "SUCCESS";
 
+    if(!json.isMember("error")) {
+        return;
+    }
+
+    Value error    = json["error"];
+    Value params;
     std::stringstream ss;
-    ss << error["error_msg"].asString() << "\n";
-    for(ArrayIndex i = 0; i < request_params.size()-1; i++) {
-        ss << request_params[i]["key"] << "  :  "
-           << request_params[i]["value"]
-           << std::endl;
+
+    try {
+        err_code = static_cast<VKResultCode_t>(error["error_code"].asInt());
+        params   = json["request_params"];
+
+        ss << error["error_msg"].asString() << "\n";
+        for(ArrayIndex i = 0; i < params.size()-1; i++) {
+            ss << params[i]["key"] << "  :  "
+               << params[i]["value"]
+               << std::endl;
+        }
+    } catch (std::exception&) {
+        WARNING() << "Parsing JSON error responce failed";
     }
 
     err_str = ss.str();

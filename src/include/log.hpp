@@ -70,7 +70,7 @@ const string lvl_strings[] = {
 #define LOG_OSTREAM(level)          ((level == mlog::error || level == mlog::warning) ? mlog::err_ostream : mlog::log_ostream)
 #define Log(level)                  mlog::Logger(LOG_OSTREAM(level), level) \
                                              << PRINT_TIMER()      << PRINT_DATE()     << PRINT_TIME() \
-                                             << PRINT_LEVEL(level) << PRINT_SOURCE() << PRINT_FUNC()
+                                             << PRINT_LEVEL(level) << PRINT_SOURCE()   << PRINT_FUNC()
 
 #define ERROR()                     Log(mlog::error)
 #define WARNING()                   Log(mlog::warning)

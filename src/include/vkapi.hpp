@@ -608,7 +608,7 @@ private:
 
     API_RETURN_VALUE CustomRequest(const string url, const string method, const Args& arguments);
 
-    API_RETURN_VALUE HandleError(const VKValue json);
+    API_RETURN_VALUE HandleError(const VKValue& json);
 
     const string GenerateURL(const string url, const string method, const Args& arguments);
 
