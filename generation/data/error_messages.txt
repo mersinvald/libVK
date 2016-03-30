@@ -1,0 +1,30 @@
+Unknown error occurred
+Application is disabled. Enable your application or use test mode
+Unknown method passed
+Incorrect signature
+User authorization failed
+Too many requests per second
+Permission to perform this action is denied
+Invalid request
+Flood control
+Internal server error
+In test mode application should be disabled or user should be authorized
+Captcha needed
+Access denied
+HTTP authorization failed
+Validation required
+Permission to perform this action is denied for non-standalone applications
+Permission to perform this action is allowed only for Standalone and OpenAPI applications
+This method was disabled
+Confirmation required
+One of the parameters specified was missing or invalid
+Invalid application API ID
+Invalid user id
+Invalid timestamp
+Access to album denied
+Access to audio denied
+Access to group denied
+This album is full
+Permission denied. You must enable votes processing in application settings
+Permission denied. You have no access to operations specified with given object(s)
+Some ads error occured

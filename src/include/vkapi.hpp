@@ -10,11 +10,12 @@
 #include <map>
 #include <exception>
 #include <curl/curl.h>
+#include <chrono>
 
 #include "types.hpp"
-#include "vkjson.hpp"
 
 namespace vk {
+using std::chrono::milliseconds;
 
 enum VKResultCode_t {
     RESULT_SUCCESS                          = 0,
@@ -65,7 +66,6 @@ public:
     friend std::ostream& operator<< (std::ostream& os, const libVKException& e);
     const char* what() const noexcept;
 
-protected:
     string  err_str;
     int     err_code;
 };
@@ -90,31 +90,33 @@ struct JsonException : public libVKException { using libVKException::libVKExcept
 #define API_METHOD_ARGS                       Args& args
 #define API_SUBCLASS_METHOD_REQUEST(method) { return this_ptr->Request((method), args); }
 #define API_METHOD_REQUEST(method)          { return           Request((method), args); }
-#define API_RETURN_VALUE                      void
+#define API_RETURN_VALUE                      VKValue
 
 class VKAPI {
 public:
     VKAPI();
-    VKAPI(const string app_id, const string app_secret);
+    VKAPI(const string& app_id, const string& app_secret);
 
     /* Base functionality */
 
-    API_RETURN_VALUE Authorize(const string login, const string passwd, string* access_token = NULL);
-    API_RETURN_VALUE Request(const string method, Args& arguments);
+    API_RETURN_VALUE Authorize(const string& login, const string& passwd, string* access_token = NULL);
+    API_RETURN_VALUE Request(const string& method, Args& arguments);
 
     /* Setters */
 
-    void SetAppID            (const string app_id);
-    void SetAppSecret        (const string app_secret);
-    void SetefaultAccessToken(const string token);
-    void SetDefaultAPIVersion(const string version);
+    void SetAppID             (const string& app_id);
+    void SetAppSecret         (const string& app_secret);
+    void SetDefaultLang       (const string& lang);
+    void SetDefaultAccessToken(const string& token);
+    void SetDefaultAPIVersion (const string& version);
+    void SetMaxRequestsPerSec (const uint8_t max_requests);
 
     /* Getters */
 
     CURLcode       getCurlError()   const;
     VKResultCode_t getVKError()     const;
     const VKValue& getJSON()        const;
-    string         getAccessToken() const;
+    const string&  getAccessToken() const;
 
     /* API methods */
     inline API_RETURN_VALUE queue      (API_METHOD_ARGS);
@@ -604,13 +606,13 @@ private:
     /* CURL Write Function to read data from API */
     static size_t CurlWriteDataCallback(void* contents, size_t size, size_t nmemb, void* useptr);
 
-    API_RETURN_VALUE ReadDataToJSON();
+    void ReadDataToJSON();
 
-    API_RETURN_VALUE CustomRequest(const string url, const string method, const Args& arguments);
+    void CustomRequest(const string& url, const string& method, const Args& arguments);
 
-    API_RETURN_VALUE HandleError(const VKValue& json);
+    void HandleError(const VKValue& json);
 
-    const string GenerateURL(const string url, const string method, const Args& arguments);
+    const string GenerateURL(const string& url, const string& method, const Args& arguments);
 
     string   app_id;
     string   app_secret;
@@ -622,8 +624,13 @@ private:
 
     string   def_access_token;
     string   def_api_version;
+    string   def_lang;
 
     string   buffer;
+
+    uint8_t      max_requests_per_second;
+    uint8_t      request_counter;
+    milliseconds last_time;
 };
 
 }

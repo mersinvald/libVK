@@ -62,7 +62,7 @@ libVKException::what() const noexcept {
 }
 
 std::ostream&
-operator<< (std::ostream& os, const VKException& e) {
+operator<< (std::ostream& os, const libVKException& e) {
     os << "Exception:\n"
        << e.what();
 

@@ -9,9 +9,9 @@ CONFIG -= qt
 
 TARGET = VK
 
-#QMAKE_CXX = ccache $${QMAKE_CXX}
-QMAKE_CXXFLAGS += -O0
-#QMAKE_CXXFLAGS += -fsanitize=memory -fsanitize-memory-track-origins -fPIE -fno-omit-frame-pointer -g -O2
+QMAKE_CXX = ccache $${QMAKE_CXX}
+#QMAKE_CXXFLAGS += -O0
+#QMAKE_CXXFLAGS += -fsanitize=memory -fsanitize-memory-track-origins -fPIE -fno-omit-frame-pointer -g  -std=c++11   -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -O2
 #QMAKE_LFLAGS += -fsanitize=memory -fsanitize-memory-track-origins -pie -fno-omit-frame-pointer -g
 
 
@@ -28,7 +28,6 @@ INCLUDEPATH += ./third-party/
 SOURCES += \
     third-party/jsoncpp.cpp \
     vkapi.cpp \
-    vkjson.cpp \
     to_string.cpp \
     init.cpp \
     vkexception.cpp \
@@ -36,7 +35,6 @@ SOURCES += \
 
 HEADERS += \
     include/vkapi.hpp \
-    include/vkjson.hpp \
     include/types.hpp \
     include/string_utils.hpp \
     include/log.hpp

@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Mike Lubinets (aka mersinvald)
+﻿/* Copyright (c) 2016 Mike Lubinets (aka mersinvald)
  * See LICENSE */
 
 #ifndef VKAPI_TYPES_HPP
@@ -24,6 +24,9 @@ using IDArray  = VKArray<ID>;
 using StrArray = VKArray<string>;
 using Args     = map<string, string>;
 
+using namespace Json;
+using VKValue = Value;
+
 class VKAPI;
 
 template<typename T>
@@ -32,7 +35,7 @@ string to_string(const IDArray& value);
 string to_string(const StrArray& value);
 string to_string(const Args& value);
 
-inline string to_string(string str) { return str; }
+inline const string& to_string(const string& str) { return str; }
 
 }
 
